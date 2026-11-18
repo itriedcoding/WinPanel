@@ -81,7 +81,7 @@ mod imp {
     pub fn attach(pid: u32, limits: &Limits) -> Option<Inner> {
         unsafe {
             let job = CreateJobObjectW(std::ptr::null(), std::ptr::null());
-            if job == 0 {
+            if job.is_null() {
                 tracing::warn!("could not create job object for pid {pid}");
                 return None;
             }
@@ -120,7 +120,7 @@ mod imp {
 
             let access = PROCESS_SET_QUOTA | PROCESS_TERMINATE | PROCESS_SET_INFORMATION;
             let process = OpenProcess(access, 0, pid);
-            if process == 0 {
+            if process.is_null() {
                 tracing::warn!("could not open process {pid} to attach the job object");
                 CloseHandle(job);
                 return None;
@@ -162,7 +162,7 @@ mod imp {
 
     unsafe fn open_for_affinity(pid: u32) -> Option<HANDLE> {
         let handle = OpenProcess(PROCESS_SET_INFORMATION, 0, pid);
-        if handle == 0 {
+        if handle.is_null() {
             None
         } else {
             Some(handle)
@@ -171,7 +171,7 @@ mod imp {
 
     pub fn terminate(inner: &Inner) {
         unsafe {
-            if inner.job != 0 {
+            if !inner.job.is_null() {
                 TerminateJobObject(inner.job, 1);
             }
         }
@@ -191,7 +191,7 @@ mod imp {
 
     pub fn release(inner: &Inner) {
         unsafe {
-            if inner.job != 0 {
+            if !inner.job.is_null() {
                 CloseHandle(inner.job);
             }
         }
