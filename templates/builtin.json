@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "minecraft-java",
+      "name": "Minecraft: Java Edition",
+      "category": "Minecraft",
+      "vendor": "Mojang",
+      "description": "Official Mojang vanilla Java server. Downloads the exact release you choose straight from Mojang's version manifest.",
+      "install": { "method": "minecraft_vanilla", "target": "server.jar", "archive": "none" },
+      "runtime": [{ "kind": "java", "minimumMajor": 21, "required": true }],
+      "startupExe": "java",
+      "startupArgs": "-Xms512M -Xmx{{memoryMb}}M -jar server.jar nogui",
+      "stopCommand": "stop",
+      "port": 25565,
+      "protocol": "tcp",
+      "memoryMb": 4096,
+      "storageMb": 20480,
+      "options": [
+        {
+          "id": "mcVersion",
+          "label": "Minecraft version",
+          "kind": "text",
+          "default": "latest",
+          "required": true,
+          "help": "Use \"latest\" or a release such as 1.21.4 (see the Minecraft version manifest)."
+        },
+        {
+          "id": "acceptEula",
+          "label": "Accept the Minecraft EULA",
+          "kind": "bool",
+          "default": "true",
+          "help": "Required by Mojang before the server will start: https://www.minecraft.net/eula"
+        },
+        {
+          "id": "motd",
+          "label": "Server MOTD",
+          "kind": "text",
+          "default": "A WinPanel server",
+          "help": "Shown in the multiplayer server list."
+        }
+      ],
+      "files": [
+        { "path": "eula.txt", "content": "# Accepted through WinPanel\neula={{acceptEula}}\n" },
+        {
+          "path": "server.properties",
+          "content": "motd={{motd}}\nserver-port={{port}}\nenable-command-block=true\nonline-mode=true\nmax-players=20\nview-distance=10\n"
+        }
+      ],
+      "notes": "Requires Java 21 or newer. The first start generates the world and can take a minute."
+    },
+    {
+      "id": "minecraft-paper",
+      "name": "Minecraft: Paper",
+      "category": "Minecraft",
+      "vendor": "PaperMC",
+      "description": "High-performance Paper server with plugin support. Resolves the newest build for the selected version from the PaperMC API.",
+      "install": { "method": "paper", "target": "server.jar", "archive": "none" },
+      "runtime": [{ "kind": "java", "minimumMajor": 21, "required": true }],
+      "startupExe": "java",
+      "startupArgs": "-Xms512M -Xmx{{memoryMb}}M -jar server.jar nogui",
+      "stopCommand": "stop",
+      "port": 25565,
+      "protocol": "tcp",
+      "memoryMb": 4096,
+      "storageMb": 20480,
+      "options": [
+        {
+          "id": "mcVersion",
+          "label": "Minecraft version",
+          "kind": "text",
+          "default": "latest",
+          "required": true,
+          "help": "Use \"latest\" or a Paper version such as 1.21.4."
+        },
+        {
+          "id": "acceptEula",
+          "label": "Accept the Minecraft EULA",
+          "kind": "bool",
+          "default": "true",
+          "help": "Required by Mojang before the server will start."
+        },
+        { "id": "motd", "label": "Server MOTD", "kind": "text", "default": "A WinPanel server" }
+      ],
+      "files": [
+        { "path": "eula.txt", "content": "# Accepted through WinPanel\neula={{acceptEula}}\n" },
+        {
+          "path": "server.properties",
+          "content": "motd={{motd}}\nserver-port={{port}}\nenable-command-block=true\nonline-mode=true\nmax-players=20\n"
+        }
+      ],
+      "notes": "Plugins go into the plugins folder. Paper is a drop-in replacement for vanilla."
+    },
+    {
+      "id": "minecraft-bedrock",
+      "name": "Minecraft: Bedrock",
+      "category": "Minecraft",
+      "vendor": "Mojang",
+      "description": "Official Bedrock Dedicated Server for Windows and Linux, fetched from Microsoft's download service.",
+      "install": { "method": "bedrock", "target": "", "archive": "zip" },
+      "runtime": [],
+      "startupExe": "bedrock_server.exe",
+      "startupArgs": "",
+      "stopCommand": "stop",
+      "port": 19132,
+      "protocol": "udp",
+      "memoryMb": 2048,
+      "storageMb": 20480,
+      "options": [
+        { "id": "levelName", "label": "World name", "kind": "text", "default": "Bedrock level" },
+        {
+          "id": "onlineMode",
+          "label": "Xbox Live authentication",
+          "kind": "bool",
+          "default": "true",
+          "help": "Disable only for private LAN testing."
+        }
+      ],
+      "files": [
+        {
+          "path": "server.properties",
+          "content": "server-name={{levelName}}\nlevel-name={{levelName}}\nserver-port={{port}}\nserver-portv6={{port}}\nonline-mode={{onlineMode}}\nallow-cheats=false\n"
+        }
+      ],
+      "notes": "Bedrock uses UDP. Open UDP {{port}} in Windows Firewall for internet play."
+    },
+    {
+      "id": "fivem",
+      "name": "FiveM (FXServer)",
+      "category": "Game servers",
+      "vendor": "Cfx.re",
+      "description": "FiveM/GTA V roleplay server using the latest recommended FXServer Windows artifact.",
+      "install": { "method": "fivem", "target": "", "archive": "zip" },
+      "runtime": [],
+      "startupExe": "FXServer.exe",
+      "startupArgs": "+exec server.cfg +set onesync on",
+      "stopCommand": "",
+      "port": 30120,
+      "protocol": "udp",
+      "memoryMb": 4096,
+      "storageMb": 51200,
+      "options": [
+        {
+          "id": "licenseKey",
+          "label": "Cfx.re license key",
+          "kind": "password",
+          "default": "changeme",
+          "required": true,
+          "help": "Create a key at https://keymaster.fivem.net and paste it here."
+        },
+        { "id": "serverName", "label": "Server name", "kind": "text", "default": "WinPanel FiveM" }
+      ],
+      "files": [
+        {
+          "path": "server.cfg",
+          "content": "# Generated by WinPanel\nendpoint_add_tcp \"0.0.0.0:{{port}}\"\nendpoint_add_udp \"0.0.0.0:{{port}}\"\nsv_hostname \"{{serverName}}\"\nsv_licenseKey \"{{licenseKey}}\"\nsv_maxclients 32\nsv_endpointprivacy true\nonesync on\nensure mapmanager\nensure chat\nensure spawnmanager\nensure sessionmanager\nensure basic-gamemode\nensure hardcap\nensure rconlog\n"
+        }
+      ],
+      "notes": "A FiveM server needs the rockstar-license key above. Resources belong in the resources folder; add ensure lines to server.cfg."
+    },
+    {
+      "id": "generic-java",
+      "name": "Java application",
+      "category": "Applications",
+      "vendor": "Custom",
+      "description": "Run any Java JAR. Point the startup arguments at your jar; the heap size follows the memory limit.",
+      "install": { "method": "none", "target": "", "archive": "none" },
+      "runtime": [{ "kind": "java", "minimumMajor": 17, "required": true }],
+      "startupExe": "java",
+      "startupArgs": "-Xms256M -Xmx{{memoryMb}}M -jar {{jarFile}}",
+      "stopCommand": "",
+      "port": 8080,
+      "protocol": "tcp",
+      "memoryMb": 1024,
+      "storageMb": 5120,
+      "options": [
+        {
+          "id": "jarFile",
+          "label": "JAR filename",
+          "kind": "text",
+          "default": "app.jar",
+          "required": true,
+          "help": "Upload the jar with the file manager after creating the server."
+        }
+      ],
+      "files": [],
+      "notes": "No download is performed. Upload your jar through the file manager."
+    },
+    {
+      "id": "generic-node",
+      "name": "Node.js application",
+      "category": "Applications",
+      "vendor": "Custom",
+      "description": "Run a Node.js project with a generated package.json and starter entrypoint.",
+      "install": { "method": "none", "target": "", "archive": "none" },
+      "runtime": [{ "kind": "node", "minimumMajor": 18, "required": true }],
+      "startupExe": "node",
+      "startupArgs": "index.js",
+      "stopCommand": "",
+      "port": 3000,
+      "protocol": "tcp",
+      "memoryMb": 1024,
+      "storageMb": 5120,
+      "options": [
+        { "id": "entry", "label": "Entry file", "kind": "text", "default": "index.js", "required": true }
+      ],
+      "files": [
+        {
+          "path": "package.json",
+          "content": "{\n  \"name\": \"winpanel-node-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"main\": \"{{entry}}\",\n  \"scripts\": { \"start\": \"node {{entry}}\" }\n}\n"
+        },
+        {
+          "path": "index.js",
+          "content": "// Generated by WinPanel. Replace with your application.\nconst http = require('node:http');\n\nconst port = Number(process.env.SERVER_PORT || {{port}});\n\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, { 'content-type': 'text/plain' });\n  res.end('Hello from WinPanel\\n');\n});\n\nserver.listen(port, () => {\n  console.log(`Listening on http://localhost:${port}`);\n});\n\nprocess.on('SIGTERM', () => server.close(() => process.exit(0)));\n"
+        }
+      ],
+      "notes": "Install dependencies with npm from the console once uploaded, then restart the server."
+    },
+    {
+      "id": "generic-python",
+      "name": "Python application",
+      "category": "Applications",
+      "vendor": "Custom",
+      "description": "Run a Python 3 project with a starter entrypoint and virtualenv-friendly startup.",
+      "install": { "method": "none", "target": "", "archive": "none" },
+      "runtime": [{ "kind": "python", "minimumMajor": 3, "required": true }],
+      "startupExe": "python",
+      "startupArgs": "main.py",
+      "stopCommand": "",
+      "port": 8000,
+      "protocol": "tcp",
+      "memoryMb": 1024,
+      "storageMb": 5120,
+      "options": [
+        { "id": "entry", "label": "Entry file", "kind": "text", "default": "main.py", "required": true }
+      ],
+      "files": [
+        {
+          "path": "main.py",
+          "content": "# Generated by WinPanel. Replace with your application.\nimport os\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\n\nPORT = int(os.environ.get(\"SERVER_PORT\", \"{{port}}\"))\n\n\nclass Handler(BaseHTTPRequestHandler):\n    def do_GET(self):\n        body = b\"Hello from WinPanel\\n\"\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"text/plain\")\n        self.send_header(\"Content-Length\", str(len(body)))\n        self.end_headers()\n        self.wfile.write(body)\n\n\nif __name__ == \"__main__\":\n    print(f\"Listening on http://localhost:{PORT}\", flush=True)\n    HTTPServer((\"0.0.0.0\", PORT), Handler).serve_forever()\n"
+        },
+        {
+          "path": "requirements.txt",
+          "content": "# Add your dependencies here\n"
+        }
+      ],
+      "notes": "Create a virtual environment from the console if you need isolated packages."
+    },
+    {
+      "id": "generic-executable",
+      "name": "Custom executable",
+      "category": "Applications",
+      "vendor": "Custom",
+      "description": "Bring your own Windows executable. WinPanel manages the process, console, files, ports, backups and monitoring.",
+      "install": { "method": "none", "target": "", "archive": "none" },
+      "runtime": [],
+      "startupExe": "",
+      "startupArgs": "",
+      "stopCommand": "",
+      "port": 27015,
+      "protocol": "udp",
+      "memoryMb": 1024,
+      "storageMb": 10240,
+      "options": [
+        {
+          "id": "exeName",
+          "label": "Executable filename",
+          "kind": "text",
+          "default": "server.exe",
+          "required": true,
+          "help": "Upload the executable and its files, then set the startup command."
+        }
+      ],
+      "files": [],
+      "notes": "Set the startup executable to a file you upload, for example server.exe, or to a command available on PATH."
+    }
+  ]
+}

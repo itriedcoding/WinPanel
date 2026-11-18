@@ -1,0 +1,71 @@
+[package]
+name = "winpanel"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.77"
+description = "WinPanel - a lightweight Windows server management panel written in Rust"
+license = "MIT"
+repository = "https://github.com/itriedcoding/WinPanel"
+homepage = "https://github.com/itriedcoding/WinPanel"
+readme = "README.md"
+keywords = ["game-server", "panel", "windows", "server-management"]
+categories = ["command-line-utilities", "web-programming"]
+
+[[bin]]
+name = "winpanel"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.7", features = ["ws"] }
+tokio = { version = "1", features = [
+    "rt-multi-thread",
+    "macros",
+    "process",
+    "sync",
+    "time",
+    "signal",
+    "fs",
+    "io-util",
+    "net",
+] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+argon2 = "0.5"
+rand = "0.8"
+uuid = { version = "1", features = ["v4"] }
+sysinfo = "0.33"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+rust-embed = "8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+reqwest = { version = "0.12", default-features = false, features = [
+    "json",
+    "rustls-tls",
+    "stream",
+] }
+sha2 = "0.10"
+hex = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+futures-util = "0.3"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_System_JobObjects",
+    "Win32_System_Threading",
+] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = 1

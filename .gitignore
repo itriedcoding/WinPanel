@@ -1,0 +1,28 @@
+# Rust build output
+/target/
+**/*.rs.bk
+
+# Local runtime data (database, servers, backups, logs)
+/data/
+*.db
+*.db-wal
+*.db-shm
+*.log
+/config.json
+/winpanel-data/
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local environment files
+.env
+.dev.vars
+
+# Release artifacts built locally
+/dist/
+*.pdb
