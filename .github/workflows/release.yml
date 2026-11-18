@@ -46,9 +46,18 @@ jobs:
         run: |
           cargo build --release --locked 2>&1 | Tee-Object -FilePath build.log
           if ($LASTEXITCODE -ne 0) {
-            $text = Get-Content build.log -Raw
-            if ($text.Length -gt 55000) { $text = $text.Substring($text.Length - 55000) }
-            $escaped = $text -replace '%', '%25' -replace "`r", '' -replace "`n", '%0A'
+            $lines = @(Get-Content build.log)
+            $blocks = New-Object System.Collections.Generic.List[string]
+            for ($i = 0; $i -lt $lines.Count; $i++) {
+              if ($lines[$i] -match '^error(\[|:)') {
+                $end = [Math]::Min($i + 14, $lines.Count - 1)
+                $blocks.Add(($lines[$i..$end] -join "`n"))
+              }
+            }
+            if ($blocks.Count -eq 0) { $blocks.Add(($lines | Select-Object -Last 40) -join "`n") }
+            $text = ($blocks -join "`n---`n")
+            if ($text.Length -gt 50000) { $text = $text.Substring(0, 50000) }
+            $escaped = $text.Replace('%', '%25').Replace("`r", '').Replace("`n", '%0A')
             Write-Host "::error title=Cargo build failed::$escaped"
             exit 1
           }
