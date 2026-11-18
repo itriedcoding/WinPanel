@@ -33,18 +33,27 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Clippy
-        shell: bash
+        shell: pwsh
         env:
           CARGO_TERM_COLOR: never
         run: |
-          set -o pipefail
-          cargo clippy --all-targets -- -D warnings 2>&1 | tee clippy.log
-          status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            body=$(grep -E "^(error|warning)(\[|:)" -A 12 clippy.log | head -n 150 | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
-            echo "::error title=Clippy failed::$body"
-            exit "$status"
-          fi
+          cargo clippy --all-targets -- -D warnings 2>&1 | Tee-Object -FilePath clippy.log
+          if ($LASTEXITCODE -ne 0) {
+            $lines = @(Get-Content clippy.log)
+            $blocks = New-Object System.Collections.Generic.List[string]
+            for ($i = 0; $i -lt $lines.Count; $i++) {
+              if ($lines[$i] -match '^(error|warning)(\[|:)') {
+                $end = [Math]::Min($i + 14, $lines.Count - 1)
+                $blocks.Add(($lines[$i..$end] -join "`n"))
+              }
+            }
+            if ($blocks.Count -eq 0) { $blocks.Add(($lines | Select-Object -Last 40) -join "`n") }
+            $text = ($blocks -join "`n---`n")
+            if ($text.Length -gt 50000) { $text = $text.Substring(0, 50000) }
+            $escaped = $text.Replace('%', '%25').Replace("`r", '').Replace("`n", '%0A')
+            Write-Host "::error title=Clippy failed::$escaped"
+            exit 1
+          }
 
       - name: Tests
         run: cargo test --locked
