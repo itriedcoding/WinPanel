@@ -160,8 +160,8 @@ mod imp {
         }
     }
 
-    unsafe fn open_for_affinity(pid: u32) -> Option<HANDLE> {
-        let handle = OpenProcess(PROCESS_SET_INFORMATION, 0, pid);
+    fn open_for_affinity(pid: u32) -> Option<HANDLE> {
+        let handle = unsafe { OpenProcess(PROCESS_SET_INFORMATION, 0, pid) };
         if handle.is_null() {
             None
         } else {
