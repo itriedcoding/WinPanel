@@ -291,7 +291,14 @@ cargo build --release
 ```
 
 CI runs these on Linux and Windows for every push and pull request. Releases are built on
-`windows-latest` and published with a SHA-256 checksum file so downloads can be verified:
+`windows-latest` by `.github/workflows/release.yml`, which also smoke-tests the produced
+executable before publishing it with a SHA-256 checksum file.
+
+To cut a release, bump the version in `Cargo.toml` and push a `v<version>` tag (or a branch
+named `release/v<version>`). The workflow builds, tests, creates the GitHub release and
+uploads `WinPanel.exe` and `SHA256SUMS.txt`.
+
+Verify a download with:
 
 ```powershell
 Get-FileHash .\WinPanel.exe -Algorithm SHA256
