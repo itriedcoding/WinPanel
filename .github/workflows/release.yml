@@ -40,7 +40,18 @@ jobs:
           Write-Host "Building WinPanel $version"
 
       - name: Build
-        run: cargo build --release --locked
+        shell: pwsh
+        env:
+          CARGO_TERM_COLOR: never
+        run: |
+          cargo build --release --locked 2>&1 | Tee-Object -FilePath build.log
+          if ($LASTEXITCODE -ne 0) {
+            $text = Get-Content build.log -Raw
+            if ($text.Length -gt 55000) { $text = $text.Substring($text.Length - 55000) }
+            $escaped = $text -replace '%', '%25' -replace "`r", '' -replace "`n", '%0A'
+            Write-Host "::error title=Cargo build failed::$escaped"
+            exit 1
+          }
 
       - name: Package artifacts
         shell: pwsh
