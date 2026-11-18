@@ -235,7 +235,6 @@ export function openModal({ title, subtitle, body, footer, wide = false, narrow 
     footNode.append(footer);
     panel.append(footNode);
   }
-  panel.appendChild(head);
   root.replaceChildren(panel);
   root.hidden = false;
 
