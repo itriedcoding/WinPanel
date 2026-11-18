@@ -210,7 +210,7 @@ impl UpdateManager {
             if let Ok(mut file) = std::fs::File::open(&dest) {
                 let _ = file.read_exact(&mut header);
             }
-            if header != [b'M', b'Z'] {
+            if header != *b"MZ" {
                 let _ = std::fs::remove_file(&dest);
                 return Err(AppError::internal(
                     "Downloaded file is not a valid Windows executable",
